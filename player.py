@@ -1,6 +1,7 @@
 # imports
 from constants import *
 from circleshape import *
+from shot import *
 
 # Creates Player class and inherits from CircleShape for hitbox
 class Player(CircleShape):
@@ -37,6 +38,9 @@ class Player(CircleShape):
         if keys[pygame.K_w]:
             self.move(dt)
 
+        if keys[pygame.K_SPACE]:
+            self.shoot()
+
     # Draws player sprite as triangle
     def triangle(self) -> list[pygame.Vector2]:
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -45,3 +49,8 @@ class Player(CircleShape):
         b = self.position - forward * self.radius - right
         c = self.position - forward * self.radius + right
         return [a, b, c]
+    
+    def shoot(self):
+        bullet = Shot(self.position.x, self.position.y)
+        forward = pygame.Vector2(0, 1)
+        bullet.velocity = forward.rotate(self.rotation) * PLAYER_SHOOT_SPEED
