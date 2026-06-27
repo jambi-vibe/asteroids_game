@@ -10,6 +10,8 @@ class Player(CircleShape):
 
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
+        self.cooldown_timer = 0
+
 
     def draw(self, screen):
         pygame.draw.polygon(screen, "white", self.triangle(), LINE_WIDTH)
@@ -41,6 +43,8 @@ class Player(CircleShape):
         if keys[pygame.K_SPACE]:
             self.shoot()
 
+        self.cooldown_timer -= dt
+
     # Draws player sprite as triangle
     def triangle(self) -> list[pygame.Vector2]:
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -51,6 +55,12 @@ class Player(CircleShape):
         return [a, b, c]
     
     def shoot(self):
-        bullet = Shot(self.position.x, self.position.y)
-        forward = pygame.Vector2(0, 1)
-        bullet.velocity = forward.rotate(self.rotation) * PLAYER_SHOOT_SPEED
+        if self.cooldown_timer > 0:
+            print(f"cannot shoot: reloading...")
+       
+        else:
+            self.cooldown_timer = PLAYER_SHOOT_COOLDOWN_SECONDS
+
+            bullet = Shot(self.position.x, self.position.y)
+            forward = pygame.Vector2(0, 1)
+            bullet.velocity = forward.rotate(self.rotation) * PLAYER_SHOOT_SPEED
