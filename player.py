@@ -4,14 +4,26 @@ from circleshape import *
 
 # Creates Player class and inherits from CircleShape for hitbox
 class Player(CircleShape):
+
     def __init__(self, x, y):
 
         super().__init__(x, y, PLAYER_RADIUS)
+        self.rotation = 0
 
     def draw(self, screen):
         pygame.draw.polygon(screen, "white", self.triangle(), LINE_WIDTH)
 
-    rotation = 0
+    def rotate(self, dt):
+        self.rotation = self.rotation + PLAYER_TURN_SPEED * dt
+    
+    def update(self, dt: float) -> None:
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_a]:
+            self.rotate(-1 * dt)
+        
+        if keys[pygame.K_d]:
+            self.rotate(dt)
 
     # Draws player sprite as triangle
     def triangle(self) -> list[pygame.Vector2]:
